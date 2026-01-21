@@ -3,23 +3,22 @@
 \documentclass{betterposterv2}
 
 % --- Packages ---
-\usepackage{lipsum} 
-\usepackage{booktabs} % For nice tables
-\usepackage{enumitem} % For custom lists
+\usepackage{booktabs}
+\usepackage{enumitem}
+
+% --- Poster Layout (optional overrides) ---
+% \SetHeaderHeight{14cm}
+% \SetFooterHeight{12cm}
+% \SetSideMargin{4.5cm}
+% \SetColumnGap{1.2cm}
 
 % --- Poster Content Configuration ---
-
-% 1. The "Main Finding" (Top Header)
 \mainfinding{A \$50 Open-Source NMR Spectrometer achieves \unit{\hertz}-level resolution using FPGA-based SDR and Python processing.}
 
-% 2. The Main Title (Body)
 \title{Democratizing Spin Physics: A Software-Defined Radio Approach to Low-Field NMR Spectroscopy}
 
-% 3. The Footer
-% We use minipages to organize the footer: [ QR Code | Authors | Logo ]
 \footercontent{%
     \begin{minipage}{0.15\textwidth}
-        % Replace with your QR code image
         \includegraphics[height=8cm, keepaspectratio]{example-image-1x1}%
     \end{minipage}%
     \hfill
@@ -33,47 +32,41 @@
     \hfill
     \begin{minipage}{0.2\textwidth}
         \raggedleft
-        % Replace with your logo
         \includegraphics[height=6cm, keepaspectratio]{example-image-16x9}%
     \end{minipage}%
 }
 
 \begin{document}
 
-% Print the Title
 \maketitle
 
 % --- BLOCK 1: BACKGROUND (Wide Grey) ---
-\begin{bpwidebox}{Background}
-    Current commercial NMR spectrometers cost upwards of \$50k, limiting access in education and developing regions. We propose a \textbf{\SI{25}{\MHz} (\SI{0.58}{\tesla})} permanent magnet system using commercial-off-the-shelf (COTS) RF components and a custom open-source Python analysis stack to democratize magnetic resonance.
-\end{bpwidebox}
+\begin{bpbox}[bpcolor=grey, bpstyle=wide, title={Background}]
+    Current commercial NMR spectrometers cost upwards of \$50k, limiting access in education and developing regions. We propose a \SI{25}{\MHz} (\SI{0.58}{\tesla}) permanent magnet system using commercial-off-the-shelf (COTS) RF components and a custom open-source Python analysis stack to democratize magnetic resonance.
+\end{bpbox}
 
 % --- BLOCK 2: METHODS & SYSTEM (Two Columns) ---
 \bpsection{System Design \& Methods}
 
-% The 'bpcolumns' environment automatically places boxes side-by-side
 \begin{bpcolumns}[2]
 
-    % --- LEFT BOX: Hardware ---
-    \begin{bpwhitebox}[title={Hardware Architecture}]
+    \begin{bpbox}[title={Hardware Architecture}]
         The system relies on a Red Pitaya FPGA board acting as a Software Defined Radio (SDR).
 
         \begin{itemize}[leftmargin=*]
-            \item \textbf{Magnet:} Halbach array of N52 NdFeB magnets ($B_0 \approx \SI{0.58}{\tesla}$).
-            \item \textbf{Probe:} Solenoid coil ($L=\SI{1.2}{\micro\henry}$) with capacitive matching to \SI{50}{\ohm}.
+            % \item \textbf{Magnet:} Halbach array of N52 NdFeB magnets ($B_0 \approx \SI{0.58}{\tesla}$).
+            % \item \textbf{Probe:} Solenoid coil ($L=\SI{1.2}{\micro\henry}$) with capacitive matching to \SI{50}{\ohm}.
             \item \textbf{Transmitter:} \SI{20}{\watt} Class-E Power Amplifier.
             \item \textbf{Receiver:} Low Noise Amplifier (LNA) with active T/R switch.
         \end{itemize}
 
         \begin{center}
-            % Placeholder image
             \includegraphics[width=\linewidth, height=8cm, keepaspectratio]{example-image-a}%
             \captionof{figure}{RF Signal Chain Block Diagram}
         \end{center}
-    \end{bpwhitebox}
+    \end{bpbox}
 
-    % --- RIGHT BOX: Software ---
-    \begin{bpwhitebox}[title={Python Processing Stack}]
+    \begin{bpbox}[title={Python Processing Stack}]
         Data acquisition and processing are handled purely in Python, utilizing \texttt{numpy} and \texttt{scipy}.
 
         \textbf{Pulse Sequence:}
@@ -87,7 +80,6 @@
             \item FFT and Voigt Profile fitting.
         \end{enumerate}
 
-        % Example code snippet
         \begin{verbatim}
 def process_signal(raw_data):
     # Downconvert
@@ -95,14 +87,14 @@ def process_signal(raw_data):
     # Decimate
     return scipy.signal.decimate(iq, 10)
         \end{verbatim}
-    \end{bpwhitebox}
+    \end{bpbox}
 
 \end{bpcolumns}
 
-% --- BLOCK 3: RESULTS (Full Width, but split internally) ---
+% --- BLOCK 3: RESULTS ---
 \bpsection{Results}
 
-\begin{bpwhitebox}
+\begin{bpbox}[title={Results Overview}]
     \begin{minipage}{0.45\textwidth}
         \textbf{Ethanol Spectrum Analysis:}\\
         The figure on the right demonstrates a single-shot acquisition of an Ethanol sample.
@@ -125,11 +117,11 @@ def process_signal(raw_data):
         \includegraphics[width=\linewidth, height=12cm, keepaspectratio]{example-image-b}%
         \captionof{figure}{\SI{25}{\MHz} \textsuperscript{1}H-NMR spectrum of Ethanol.}
     \end{minipage}
-\end{bpwhitebox}
+\end{bpbox}
 
 % --- BLOCK 4: LIMITATION (Wide Grey) ---
-\begin{bpwidebox}{Limitation}
+\begin{bpbox}[bpcolor=grey, bpstyle=wide, title={Limitation}]
     Field homogeneity remains the primary challenge. Thermal drift of the permanent magnet shifts the Larmor frequency by approx \SI{200}{\hertz\per\degreeCelsius}, requiring an external $B_0$ lock loop or temperature stabilization chamber for long-term averaging.
-\end{bpwidebox}
+\end{bpbox}
 
 \end{document}

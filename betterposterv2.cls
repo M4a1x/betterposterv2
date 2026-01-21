@@ -19,17 +19,13 @@
 \RequirePackage{geometry}       % For margins
 \RequirePackage{xcolor}         % For colors
 \RequirePackage{graphicx}       % For images
-\RequirePackage{calc}           % For size calculations
 \RequirePackage{scrlayer-scrpage} % KOMA-Script headers/footers
 \RequirePackage{caption}        % For \captionof command
 \RequirePackage{siunitx}        % For SI units
-
-% --- 3. Modern LaTeX3 Commands ---
 \RequirePackage{xparse}         % For modern command definitions
-
-% --- 4. Typography & Fonts ---
 \RequirePackage{microtype}      % Improves text spacing/appearance
 
+% --- 3. Typography & Fonts ---
 % Font Loading: Prefer Fira Sans (Modern, Open Source), fallback to Helvetica
 \ifboolexpr{bool{luatex} or bool{xetex}}{
     \RequirePackage{fontspec}
@@ -60,7 +56,9 @@
     \renewcommand{\familydefault}{\sfdefault}
 }
 
-% --- 5. Colors ---
+\sisetup{detect-all}
+
+% --- 4. Colors ---
 \definecolor{bpDark}{HTML}{2E2E2E}       % Dark header/footer
 \definecolor{bpLightGrey}{HTML}{F3F3F3}  % Page background
 \definecolor{bpDarkerGrey}{HTML}{E6E7E8} % "Background" box color
@@ -68,142 +66,165 @@
 
 \pagecolor{bpLightGrey}
 
-% --- 6. Page Geometry ---
-% We set the margins for the *content* area. 
-% The Header and Footer will be drawn outside these margins.
-\geometry{
-    top=16cm,      % Space for the top header
-    bottom=13cm,   % Space for the bottom footer
-    left=5cm,      % Left content margin
-    right=5cm,     % Right content margin
-    headheight=15cm, % Height of the header bar
-    headsep=1cm,     % Gap between header and content
-    footskip=1cm     % Gap between content and footer
-}
+% --- 5. Layout Lengths ---
+\newlength{\bpHeaderHeight}
+\newlength{\bpFooterHeight}
+\newlength{\bpSideMargin}
+\newlength{\bpHeaderGap}
+\newlength{\bpFooterGap}
+\newlength{\bpColumnGap}
 
-% --- 7. Content Boxes (tcolorbox) ---
+\setlength{\bpHeaderHeight}{15cm}
+\setlength{\bpFooterHeight}{10cm}
+\setlength{\bpSideMargin}{3cm}
+\setlength{\bpHeaderGap}{1cm}
+\setlength{\bpFooterGap}{1cm}
+\setlength{\bpColumnGap}{1cm}
+
+\NewDocumentCommand{\ApplyPosterGeometry}{}{%
+    \geometry{
+        top=\dimexpr\bpHeaderHeight+\bpHeaderGap\relax,
+        bottom=\dimexpr\bpFooterHeight+\bpFooterGap\relax,
+        left=\bpSideMargin,
+        right=\bpSideMargin,
+        headheight=\bpHeaderHeight,
+        headsep=\bpHeaderGap,
+        footskip=\bpFooterGap
+    }%
+}
+\ApplyPosterGeometry
+
+\NewDocumentCommand{\SetHeaderHeight}{m}{\setlength{\bpHeaderHeight}{#1}\ApplyPosterGeometry}
+\NewDocumentCommand{\SetFooterHeight}{m}{\setlength{\bpFooterHeight}{#1}\ApplyPosterGeometry}
+\NewDocumentCommand{\SetSideMargin}{m}{\setlength{\bpSideMargin}{#1}\ApplyPosterGeometry}
+\NewDocumentCommand{\SetColumnGap}{m}{\setlength{\bpColumnGap}{#1}}
+
+% --- 6. Content Boxes (tcolorbox) ---
 \RequirePackage{tcolorbox}
-\tcbuselibrary{skins, raster}
+\tcbuselibrary{skins, raster, breakable}
 
-% A. Wide Box (Grey Background) - for "Background", "Limitation"
-\newtcolorbox{bpwidebox}[1]{
-    colback=bpDarkerGrey,
-    colframe=bpDarkerGrey,
-    width=\linewidth,
-    arc=0mm,
-    boxrule=0pt,
-    left=1.5cm, right=1.5cm, top=1.5cm, bottom=1.5cm,
-    title={\textbf{#1}},
-    fonttitle=\Large\color{black},
-    attach title to upper={\hspace{0.5em}},
-    after skip=1.5cm
+\tcbset{
+    bpbase/.style={
+            enhanced,
+            boxrule=0pt,
+            left=1cm, right=1cm, top=0.5em, bottom=1cm,
+            toptitle=1cm, bottomtitle=0cm,
+            coltitle=black,
+            arc=4mm,
+            fonttitle=\bfseries\Large
+        },
+    bpcolor/.is choice,
+    bpcolor/grey/.style={
+            colback=bpDarkerGrey,
+            colframe=bpDarkerGrey,
+        },
+    bpcolor/white/.style={
+            colback=bpWhite,
+            colframe=bpWhite,
+        },
+    bpcolor/.default=white,
+    bpstyle/.is choice,
+    bpstyle/normal/.style={},
+    bpstyle/wide/.style={
+            width=\linewidth,
+        },
+    bpstyle/.default=normal,
+    bpbox/.style={
+            bpbase,
+            bpcolor=white,
+            bpstyle=normal,
+        }
 }
 
-% B. Standard White Box - for "Methods", "Results"
-\newtcolorbox{bpwhitebox}[1][]{
-    colback=bpWhite,
-    colframe=bpWhite,
-    arc=4mm,
-    boxrule=0pt,
-    left=1.5cm, right=1.5cm, top=1.5cm, bottom=1.5cm,
-    fonttitle=\bfseries\Large\color{black},
-    coltitle=black,
-    detach title,
-    before upper={\ifx\tcbtitle\empty\else{\Large\bfseries\tcbtitle\par\medskip}\fi},
+\newtcolorbox{bpbox}[1][]{
+    bpbox,
     #1
 }
 
-% C. Column Layout
+% --- 7. Grid Layout ---
 \NewDocumentEnvironment{bpcolumns}{O{2}}{%
     \begin{tcbraster}[
             raster columns=#1,
             raster equal height=rows,
-            raster column skip=1.5cm,
-            raster width=\linewidth
+            raster column skip=\bpColumnGap,
+            raster row skip=\bpColumnGap,
+            raster left skip=0pt,
+            raster right skip=0pt,
+            raster width=\linewidth,
+            raster before skip=0pt,
+            raster after skip=0pt,
+            raster valign=top%
         ]
         }{%
     \end{tcbraster}
 }
 
-% D. Section Header
+% --- 8. Section Header ---
 \NewDocumentCommand{\bpsection}{m}{%
     \par\vspace{0.5cm}{\Huge\bfseries\color{black} #1}\par\vspace{0.8cm}%
 }
 
-% --- 8. Header & Footer Implementation ---
+% --- 9. Header & Footer Content ---
+\NewDocumentCommand{\mainfinding}{m}{\gdef\bpMainFinding{#1}}
+\NewDocumentCommand{\bpMainFinding}{}{Insert Main Finding Here}
 
-% Variables to store user input using modern command definitions
-\NewDocumentCommand{\mainfinding}{m}{%
-    \gdef\@mainfinding{#1}%
-}
-\NewDocumentCommand{\@mainfinding}{}{Insert Main Finding Here}
+\NewDocumentCommand{\footercontent}{m}{\gdef\bpFooterContent{#1}}
+\NewDocumentCommand{\bpFooterContent}{}{}
 
-\NewDocumentCommand{\footercontent}{m}{%
-    \gdef\@footercontent{#1}%
-}
-\NewDocumentCommand{\@footercontent}{}{}
-
-% Clear default headers
 \clearpairofpagestyles
 
-% A. Define the Background Layers (The Dark Bars)
 \DeclareNewLayer[
     background,
     topmargin,
-    mode=picture,
-    contents={\color{bpDark}\rule{\paperwidth}{15cm}}
-]{layer.header.bg}
+    contents={\color{bpDark}\rule{\paperwidth}{\bpHeaderHeight}}
+]{bp.header.bg}
 
 \DeclareNewLayer[
     background,
     bottommargin,
-    mode=picture,
-    contents={\color{bpDark}\rule{\paperwidth}{13cm}}
-]{layer.footer.bg}
+    contents={\color{bpDark}\rule{\paperwidth}{\bpFooterHeight}}
+]{bp.footer.bg}
 
-% B. Define the Content Layers (The Text/Images)
-% Top Header Text
 \DeclareNewLayer[
     foreground,
     topmargin,
     contents={%
-            \parbox[c][15cm][c]{\paperwidth}{%
-                \hspace{5cm}%
-                \parbox{\dimexpr\paperwidth-10cm\relax}{%
+            \parbox[c][\bpHeaderHeight][c]{\paperwidth}{%
+                \hspace{\bpSideMargin}%
+                \parbox{\dimexpr\paperwidth-2\bpSideMargin\relax}{%
                     \color{white}\bfseries\fontsize{80}{95}\selectfont
                     \raggedright
-                    \@mainfinding
+                    \bpMainFinding
                 }%
             }%
         }
-]{layer.header.content}
+]{bp.header.content}
 
-% Bottom Footer Content
 \DeclareNewLayer[
     foreground,
     bottommargin,
     contents={%
-            \parbox[c][13cm][c]{\paperwidth}{%
-                \hspace{5cm}%
-                \parbox{\dimexpr\paperwidth-10cm\relax}{%
+            \parbox[c][\bpFooterHeight][c]{\paperwidth}{%
+                \hspace{\bpSideMargin}%
+                \parbox{\dimexpr\paperwidth-2\bpSideMargin\relax}{%
                     \color{white}%
-                    \@footercontent
+                    \bpFooterContent
                 }%
             }%
         }
-]{layer.footer.content}
+]{bp.footer.content}
 
-% Add layers to the page style
 \AddLayersToPageStyle{scrheadings}{
-    layer.header.bg,
-    layer.header.content,
-    layer.footer.bg,
-    layer.footer.content
+    bp.header.bg,
+    bp.header.content,
+    bp.footer.bg,
+    bp.footer.content
 }
 \pagestyle{scrheadings}
 
-% --- 9. Title Block Redefinition ---
+% --- 10. Title Block ---
 \RenewDocumentCommand{\maketitle}{}{%
+    \thispagestyle{scrheadings}%
     \begingroup
     \raggedright
     \color{black}%
