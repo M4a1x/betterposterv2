@@ -1,6 +1,6 @@
 % main.tex
 % Compile with LuaLaTeX (recommended) or XeLaTeX
-\documentclass[colorscheme=purple,debug=false]{betterposterv2} % Options: default, green, blue, red, purple
+\documentclass[colorscheme=purple,debug=true]{betterposterv2} % Options: default, green, blue, red, purple
 
 % --- Packages ---
 \usepackage{booktabs}
@@ -13,18 +13,19 @@
 % \SetColumnGap{1.2cm}
 
 % --- Poster Content Configuration ---
-\mainfinding{A \$50 Open-Source NMR Spectrometer achieves \unit{\hertz}-level resolution using FPGA-based SDR and Python processing.}
-
-\title{Democratizing Spin Physics: A Software-Defined Radio Approach to Low-Field NMR Spectroscopy}
+\mainfinding{A \$50 Open-Source NMR Spectrometer achieves \unit{\hertz}-level SDR and Python processing.}
+\title{magnETHical: A Software-Defined Radio Approach to Low-Field NMR Spectroscopy}
 
 % --- Footer Configuration ---
-\qrcode{example-image-1x1}
+\qrcode{graphics/magnethical.pdf}
 \authors{Your Name\textsuperscript{1}, Supervisor Name\textsuperscript{2}}
 \affiliations{%
-    \textsuperscript{1}Department of Electrical Engineering, University of Schifferstadt\\\\
+    \textsuperscript{1}Department of Electrical Engineering, University of Schifferstadt,
     \textsuperscript{2}Institute for Chemical Technology%
 }
-\logo{example-image-16x9}
+\logo{graphics/eth.eps}
+\publicationyear{\year}
+\portrait{graphics/portrait.jpg}
 
 \begin{document}
 
@@ -104,7 +105,7 @@ def process_signal(raw_data):
     \hfill
     \begin{minipage}{0.5\textwidth}
         \centering
-        \includegraphics[width=\linewidth, height=12cm, keepaspectratio]{example-image-b}%
+        \includegraphics[width=\linewidth,height=12cm, keepaspectratio]{example-image-b}%
         \captionof{figure}{\SI{25}{\MHz} \textsuperscript{1}H-NMR spectrum of Ethanol.}
     \end{minipage}
 \end{bpbox}

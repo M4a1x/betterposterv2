@@ -32,8 +32,8 @@
 
 % We use scrartcl (KOMA-Script article) as the base.
 % - a0paper: Sets the size.
-% - fontsize=25pt: Sets the base font size large enough for A0.
-\LoadClass[fontsize=25pt, parskip=half, a0paper]{scrartcl}
+% - fontsize=42pt: Sets the base font size large enough for A0. Taken from betterposter v2.
+\LoadClass[fontsize=42pt, parskip=half, a0paper]{scrartcl}
 
 % Check for LuaLaTeX/XeLaTeX for modern font support
 \RequirePackage{iftex}
@@ -58,12 +58,14 @@
 \RequirePackage{geometry}         % For margins
 \RequirePackage{xcolor}           % For colors
 \RequirePackage{graphicx}         % For images
+\RequirePackage[export]{adjustbox}% Extends graphicx with alignment options
 \RequirePackage{scrlayer-scrpage} % KOMA-Script headers/footers
 \RequirePackage{caption}          % For \captionof command
 \RequirePackage{siunitx}          % For SI units
 \RequirePackage{import}		      % Relative path imports
 \RequirePackage{xparse}           % For modern command definitions
 \RequirePackage{xstring}          % For \IfEqCase command
+\RequirePackage{xifthen}          % For conditional commands
 \RequirePackage[tracking=true]{microtype}% Improves text spacing/appearance
 \microtypesetup{protrusion=true,expansion=true}% Character protrusion and font expansion
 
@@ -152,7 +154,6 @@
     mode=text,                     % Use text fonts not math
     text-family-to-math=true,      % Ensure consistency
     text-series-to-math=true,
-    number-text-rm=\unitnumberfont,% Use dedicated font for numbers
     per-mode=symbol,               % Use / for division
     group-separator={,},           % Thousands separator
     group-minimum-digits=4,        % Group numbers ≥ 10000
@@ -270,13 +271,17 @@
 \newlength{\bpHeaderGap}
 \newlength{\bpFooterGap}
 \newlength{\bpColumnGap}
+\newlength{\bpFooterTopMargin}
+\newlength{\bpFooterBottomMargin}
 
 \setlength{\bpHeaderHeight}{15cm}
 \setlength{\bpFooterHeight}{10cm}
 \setlength{\bpSideMargin}{3cm}
-\setlength{\bpHeaderGap}{1cm}
-\setlength{\bpFooterGap}{1cm}
+\setlength{\bpHeaderGap}{3cm}
+\setlength{\bpFooterGap}{3cm}
 \setlength{\bpColumnGap}{1cm}
+\setlength{\bpFooterTopMargin}{0.5cm}
+\setlength{\bpFooterBottomMargin}{0.5cm}
 
 \NewDocumentCommand{\ApplyPosterGeometry}{}{%
     \geometry{
@@ -295,6 +300,8 @@
 \NewDocumentCommand{\SetFooterHeight}{m}{\setlength{\bpFooterHeight}{#1}\ApplyPosterGeometry}
 \NewDocumentCommand{\SetSideMargin}{m}{\setlength{\bpSideMargin}{#1}\ApplyPosterGeometry}
 \NewDocumentCommand{\SetColumnGap}{m}{\setlength{\bpColumnGap}{#1}}
+\NewDocumentCommand{\SetFooterTopMargin}{m}{\setlength{\bpFooterTopMargin}{#1}}
+\NewDocumentCommand{\SetFooterBottomMargin}{m}{\setlength{\bpFooterBottomMargin}{#1}}
 
 % --- 6. Content Boxes (tcolorbox) ---
 \RequirePackage{tcolorbox}
@@ -367,29 +374,39 @@
 
 % Footer element commands
 \NewDocumentCommand{\qrcode}{m}{\gdef\bpQRCode{#1}}
-\NewDocumentCommand{\bpQRCode}{}{}
+\newcommand{\bpQRCode}{}
 
 \NewDocumentCommand{\authors}{m}{\gdef\bpAuthors{#1}}
-\NewDocumentCommand{\bpAuthors}{}{}
+\newcommand{\bpAuthors}{}
 
-\NewDocumentCommand{\affiliations}{m}{\gdef\bpAffiliations{#1}}
-\NewDocumentCommand{\bpAffiliations}{}{}
+\NewDocumentCommand{\affiliations}{+m}{\gdef\bpAffiliations{#1}}
+\newcommand{\bpAffiliations}{}
+
+\NewDocumentCommand{\portrait}{m}{\gdef\bpPortrait{#1}}
+\newcommand{\bpPortrait}{}
+
+\NewDocumentCommand{\publicationyear}{m}{\gdef\bpYear{#1}}
+\newcommand{\bpYear}{}
 
 \NewDocumentCommand{\logo}{m}{\gdef\bpLogo{#1}}
-\NewDocumentCommand{\bpLogo}{}{}
+\newcommand{\bpLogo}{}
 
 % Legacy command for custom footer (if user wants full control)
 \NewDocumentCommand{\footercontent}{m}{\gdef\bpFooterContent{#1}}
 \NewDocumentCommand{\bpFooterContent}{}{%
-    % Auto-generate footer from structured elements
+    % \begin{minipage}[c]{0.2\textwidth}
+    % \includegraphics[height=\bpFooterHeight,width=\bpFooterHeight,keepaspectratio]{graphics/magnethical.pdf}
+    % \end{minipage}
+    % % Auto-generate footer from structured elements
     \ifdefempty{\bpQRCode}{}{%
-        \begin{minipage}{0.15\textwidth}
-            \includegraphics[height=8cm, keepaspectratio]{\bpQRCode}%
+        \begin{minipage}[c]{0.18\textwidth}
+            \centering
+            \includegraphics[width=\linewidth, height=\dimexpr\bpFooterHeight-0.5cm\relax, keepaspectratio]{\bpQRCode}%
         \end{minipage}%
         \hfill
     }%
     \ifdefempty{\bpAuthors}{}{%
-        \begin{minipage}{0.6\textwidth}
+        \begin{minipage}[c]{0.57\textwidth}
             \Large
             \ifdefempty{\bpAuthors}{}{\textbf{Authors:}\\\bpAuthors\\[0.5em]}%
             \ifdefempty{\bpAffiliations}{}{\bpAffiliations}%
@@ -397,53 +414,54 @@
         \hfill
     }%
     \ifdefempty{\bpLogo}{}{%
-        \begin{minipage}{0.2\textwidth}
-            \raggedleft
-            \includegraphics[height=6cm, keepaspectratio]{\bpLogo}%
+        \begin{minipage}[c]{0.2\textwidth}
+            \includegraphics[height=\dimexpr\bpFooterHeight-2cm\relax, keepaspectratio]{\bpLogo}%
         \end{minipage}%
     }%
 }
 
-\clearpairofpagestyles
 
+% --- 10. Header & Footer Layers ---
+\clearpairofpagestyles  % clear existing header/footer, e.g. page numbering
+
+% --- Backgrounds Layers ---
 \DeclareNewLayer[
     background,
-    topmargin,
+    page,
+    height=\bpHeaderHeight,
     contents={\color{bpHeaderBackground}\rule{\paperwidth}{\bpHeaderHeight}}
 ]{bp.header.bg}
 
 \DeclareNewLayer[
     background,
-    bottommargin,
+    page,
+    voffset=\dimexpr\paperheight-\bpFooterHeight\relax,
+    height=\bpFooterHeight,
     contents={\color{bpFooterBackground}\rule{\paperwidth}{\bpFooterHeight}}
 ]{bp.footer.bg}
 
+% --- Content Layers ---
 \DeclareNewLayer[
     foreground,
-    topmargin,
+    head,
+    height=\bpHeaderHeight,
     contents={%
-            \parbox[c][\bpHeaderHeight][c]{\paperwidth}{%
-                \hspace{\bpSideMargin}%
-                \parbox{\dimexpr\paperwidth-2\bpSideMargin\relax}{%
-                    \color{bpHeaderText}\bfseries\fontsize{80}{105}\selectfont
-                    \raggedright
-                    \bpMainFinding
-                }%
+            \parbox[c][\bpHeaderHeight][c]{\textwidth}{%
+                \color{bpHeaderText}%
+                \Huge%
+                \bpMainFinding%
             }%
         }
 ]{bp.header.content}
 
 \DeclareNewLayer[
     foreground,
-    bottommargin,
+    foot,
     contents={%
-            \parbox[c][\bpFooterHeight][c]{\paperwidth}{%
-                \hspace{\bpSideMargin}%
-                \parbox{\dimexpr\paperwidth-2\bpSideMargin\relax}{%
-                    \color{bpFooterText}%
-                    \bpFooterContent
-                }%
-            }%
+            % \parbox[c][\bpFooterHeight][c]{\textwidth}{%
+            % \color{bpFooterText}%
+            \bpFooterContent%
+            % }%
         }
 ]{bp.footer.content}
 
@@ -458,13 +476,8 @@
 % --- 10. Title Block ---
 \RenewDocumentCommand{\maketitle}{}{%
     \thispagestyle{scrheadings}%
-    \begingroup
-    \raggedright
-    \color{black}%
-    \fontsize{50}{65}\selectfont
-    \@title\par
-    \endgroup
-    \vspace{2cm}%
+    \Large%
+    \@title
 }
 
 \endinput
