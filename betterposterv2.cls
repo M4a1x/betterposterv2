@@ -59,8 +59,6 @@
 \RequirePackage{geometry}         % For margins
 \RequirePackage{xcolor}           % For colors
 \RequirePackage{graphicx}         % For images
-\RequirePackage{graphbox}        % For \includegraphics[align=...]
-\RequirePackage{calc}             % For calculations with lengths
 \RequirePackage{scrlayer-scrpage} % KOMA-Script headers/footers
 \RequirePackage{caption}          % For \captionof command
 \RequirePackage{siunitx}          % For SI units
@@ -399,7 +397,7 @@
         \ifdefempty{\bpQRCode}{}{%
             \begin{minipage}[c]{0.1\textwidth}
                 \centering
-                \includegraphics[height=0.8\bpFooterHeight, keepaspectratio, align=c]{\bpQRCode}
+                \includegraphics[height=0.8\bpFooterHeight, keepaspectratio]{\bpQRCode}\\[-0.7em]%
                 {\bfseries\tiny\href{https://magnethical.org/}{magnethical.org}}
             \end{minipage}%
         }%
@@ -429,11 +427,11 @@
             \raggedleft
             % Logo
             \ifdefempty{\bpLogo}{}{%
-                \includegraphics[height=\bpFooterHeight, keepaspectratio, align=c]{\bpLogo}%
+                \includegraphics[height=\bpFooterHeight, keepaspectratio]{\bpLogo}%
             }%
             % Portrait
             \ifdefempty{\bpPortrait}{}{%
-                \includegraphics[height=\bpFooterHeight, keepaspectratio, align=c]{\bpPortrait}%
+                \includegraphics[height=\bpFooterHeight, keepaspectratio]{\bpPortrait}%
             }%
         \end{minipage}%
     }%
