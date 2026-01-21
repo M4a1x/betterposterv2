@@ -22,6 +22,7 @@
 \RequirePackage{calc}           % For size calculations
 \RequirePackage{scrlayer-scrpage} % KOMA-Script headers/footers
 \RequirePackage{caption}        % For \captionof command
+\RequirePackage{siunitx}        % For SI units
 
 % --- 3. Modern LaTeX3 Commands ---
 \RequirePackage{xparse}         % For modern command definitions
