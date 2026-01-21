@@ -227,8 +227,44 @@
 \NewDocumentCommand{\mainfinding}{m}{\gdef\bpMainFinding{#1}}
 \NewDocumentCommand{\bpMainFinding}{}{Insert Main Finding Here}
 
+% Footer element commands
+\NewDocumentCommand{\qrcode}{m}{\gdef\bpQRCode{#1}}
+\NewDocumentCommand{\bpQRCode}{}{}
+
+\NewDocumentCommand{\authors}{m}{\gdef\bpAuthors{#1}}
+\NewDocumentCommand{\bpAuthors}{}{}
+
+\NewDocumentCommand{\affiliations}{m}{\gdef\bpAffiliations{#1}}
+\NewDocumentCommand{\bpAffiliations}{}{}
+
+\NewDocumentCommand{\logo}{m}{\gdef\bpLogo{#1}}
+\NewDocumentCommand{\bpLogo}{}{}
+
+% Legacy command for custom footer (if user wants full control)
 \NewDocumentCommand{\footercontent}{m}{\gdef\bpFooterContent{#1}}
-\NewDocumentCommand{\bpFooterContent}{}{}
+\NewDocumentCommand{\bpFooterContent}{}{%
+    % Auto-generate footer from structured elements
+    \ifdefempty{\bpQRCode}{}{%
+        \begin{minipage}{0.15\textwidth}
+            \includegraphics[height=8cm, keepaspectratio]{\bpQRCode}%
+        \end{minipage}%
+        \hfill
+    }%
+    \ifdefempty{\bpAuthors}{}{%
+        \begin{minipage}{0.6\textwidth}
+            \Large
+            \ifdefempty{\bpAuthors}{}{\textbf{Authors:}\\\bpAuthors\\[0.5em]}%
+            \ifdefempty{\bpAffiliations}{}{\bpAffiliations}%
+        \end{minipage}%
+        \hfill
+    }%
+    \ifdefempty{\bpLogo}{}{%
+        \begin{minipage}{0.2\textwidth}
+            \raggedleft
+            \includegraphics[height=6cm, keepaspectratio]{\bpLogo}%
+        \end{minipage}%
+    }%
+}
 
 \clearpairofpagestyles
 
