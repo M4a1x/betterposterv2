@@ -13,8 +13,21 @@
     family=bp,
     prefix=bp@
 }
+% Color scheme option (default, green, blue, red, purple)
 \DeclareStringOption[default]{colorscheme}
-\DeclareDefaultOption{\PassOptionsToClass{\CurrentOption}{scrartcl}}
+% Debug option (shows layout frames and enables draft mode)
+\DeclareBoolOption{debug}
+% Pass unknown options to base class
+\DeclareDefaultOption{%
+    \ifx\CurrentOptionValue\relax
+        \PackageWarningNoLine{\@currname}{%
+            Unknown option '\CurrentOption'\MessageBreak
+            is passed to base class 'scrartcl'%
+        }%
+        % Pass through any option to base class
+        \expandafter\PassOptionsToClass{\expandafter\CurrentOption}{scrartcl}%
+    \fi
+}
 \ProcessKeyvalOptions*
 
 % We use scrartcl (KOMA-Script article) as the base.
@@ -24,6 +37,13 @@
 
 % Check for LuaLaTeX/XeLaTeX for modern font support
 \RequirePackage{iftex}
+
+% --- Debug Mode ---
+\ifbp@debug
+    \RequirePackage{showframe}  % Shows boxes around text area, margin, header and footer
+    \KOMAoptions{draft=true}    % Print markers for overfull boxes/lines
+    \PackageInfo{betterposterv2}{Debug mode enabled: showframe loaded, draft mode active}
+\fi
 
 % --- 2. Essential Layout Packages ---
 \RequirePackage{geometry}       % For margins
