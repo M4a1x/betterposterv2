@@ -1,0 +1,135 @@
+% main.tex
+% Compile with LuaLaTeX (recommended) or XeLaTeX
+\documentclass{betterposterv2}
+
+% --- Packages ---
+\usepackage{lipsum} 
+\usepackage{booktabs} % For nice tables
+\usepackage{enumitem} % For custom lists
+
+% --- Poster Content Configuration ---
+
+% 1. The "Main Finding" (Top Header)
+\mainfinding{A \$50 Open-Source NMR Spectrometer achieves Hz-level resolution using FPGA-based SDR and Python processing.}
+
+% 2. The Main Title (Body)
+\title{Democratizing Spin Physics: A Software-Defined Radio Approach to Low-Field NMR Spectroscopy}
+
+% 3. The Footer
+% We use minipages to organize the footer: [ QR Code | Authors | Logo ]
+\footercontent{
+    \begin{minipage}{0.15\textwidth}
+        % Replace with your QR code image
+        \includegraphics[height=8cm, keepaspectratio]{example-image-1x1}
+    \end{minipage}%
+    \hfill
+    \begin{minipage}{0.6\textwidth}
+        \Large
+        \textbf{Authors:}\\
+        Your Name$^{1}$, Supervisor Name$^{2}$\\
+        $^{1}$Department of Electrical Engineering, University of Schifferstadt\\
+        $^{2}$Institute for Chemical Technology
+    \end{minipage}%
+    \hfill
+    \begin{minipage}{0.2\textwidth}
+        \raggedleft
+        % Replace with your logo
+        \includegraphics[height=6cm, keepaspectratio]{example-image-16x9}
+    \end{minipage}
+}
+
+\begin{document}
+
+% Print the Title
+\maketitle
+
+% --- BLOCK 1: BACKGROUND (Wide Grey) ---
+\begin{bpwidebox}{Background}
+    Current commercial NMR spectrometers cost upwards of \$50k, limiting access in education and developing regions. We propose a \textbf{25 MHz (0.58 T)} permanent magnet system using commercial-off-the-shelf (COTS) RF components and a custom open-source Python analysis stack to democratize magnetic resonance.
+\end{bpwidebox}
+
+% --- BLOCK 2: METHODS & SYSTEM (Two Columns) ---
+\bpsection{System Design \& Methods}
+
+% The 'bpcolumns' environment automatically places boxes side-by-side
+\begin{bpcolumns}[2]
+
+    % --- LEFT BOX: Hardware ---
+    \begin{bpwhitebox}[title={Hardware Architecture}]
+        The system relies on a Red Pitaya FPGA board acting as a Software Defined Radio (SDR).
+
+        \begin{itemize}[leftmargin=*]
+            \item \textbf{Magnet:} Halbach array of N52 NdFeB magnets ($B_0 \approx 0.58$\,T).
+            \item \textbf{Probe:} Solenoid coil ($L=1.2\,\mu$H) with capacitive matching to $50\,\Omega$.
+            \item \textbf{Transmitter:} 20W Class-E Power Amplifier.
+            \item \textbf{Receiver:} Low Noise Amplifier (LNA) with active T/R switch.
+        \end{itemize}
+
+        \begin{center}
+            % Placeholder image
+            \includegraphics[width=\linewidth, height=8cm, keepaspectratio]{example-image-a}
+            \captionof{figure}{RF Signal Chain Block Diagram}
+        \end{center}
+    \end{bpwhitebox}
+
+    % --- RIGHT BOX: Software ---
+    \begin{bpwhitebox}[title={Python Processing Stack}]
+        Data acquisition and processing are handled purely in Python, utilizing \texttt{numpy} and \texttt{scipy}.
+
+        \textbf{Pulse Sequence:}
+        A standard CPMG sequence is generated digitally.
+
+        \textbf{Processing Pipeline:}
+        \begin{enumerate}[leftmargin=*]
+            \item Digital Down Conversion (DDC) from 25 MHz to Baseband.
+            \item CIC Decimation filters.
+            \item Phase correction (0th and 1st order).
+            \item FFT and Voigt Profile fitting.
+        \end{enumerate}
+
+        % Example code snippet
+        \begin{verbatim}
+def process_signal(raw_data):
+    # Downconvert
+    iq = raw_data * np.exp(-1j * w_c * t)
+    # Decimate
+    return scipy.signal.decimate(iq, 10)
+        \end{verbatim}
+    \end{bpwhitebox}
+
+\end{bpcolumns}
+
+% --- BLOCK 3: RESULTS (Full Width, but split internally) ---
+\bpsection{Results}
+
+\begin{bpwhitebox}
+    \begin{minipage}{0.45\textwidth}
+        \textbf{Ethanol Spectrum Analysis:}\\
+        The figure on the right demonstrates a single-shot acquisition of an Ethanol sample.
+
+        We observe clearly resolved J-coupling in the methyl triplet and methylene quartet. The linewidth (FWHM) is approximately \textbf{4.5 Hz} after shimming.
+
+        \vspace{1em}
+        \begin{tabular}{ll}
+            \toprule
+            \textbf{Parameter} & \textbf{Value} \\
+            \midrule
+            Larmor Freq.       & 24.95 MHz      \\
+            SNR (Single)       & $> 500$        \\
+            \bottomrule
+        \end{tabular}
+    \end{minipage}%
+    \hfill
+    \begin{minipage}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\linewidth, height=12cm, keepaspectratio]{example-image-b}
+        \captionof{figure}{25 MHz 1H-NMR spectrum of Ethanol.}
+    \end{minipage}
+\end{bpwhitebox}
+
+% --- BLOCK 4: LIMITATION (Wide Grey) ---
+\begin{bpwidebox}{Limitation}
+    Field homogeneity remains the primary challenge. Thermal drift of the permanent magnet shifts the Larmor frequency by approx $200$\,Hz/$^\circ$C, requiring an external $B_0$ lock loop or temperature stabilization chamber for long-term averaging.
+\end{bpwidebox}
+
+\end{document}
