@@ -7,6 +7,16 @@
 \ProvidesClass{betterposterv2}[2026/01/21 Better Poster v2 Class]
 
 % --- 1. Base Class & Engine ---
+% Define class options
+\RequirePackage{kvoptions}
+\SetupKeyvalOptions{
+    family=bp,
+    prefix=bp@
+}
+\DeclareStringOption[default]{colorscheme}
+\DeclareDefaultOption{\PassOptionsToClass{\CurrentOption}{scrartcl}}
+\ProcessKeyvalOptions*
+
 % We use scrartcl (KOMA-Script article) as the base.
 % - a0paper: Sets the size.
 % - fontsize=25pt: Sets the base font size large enough for A0.
@@ -23,6 +33,7 @@
 \RequirePackage{caption}        % For \captionof command
 \RequirePackage{siunitx}        % For SI units
 \RequirePackage{xparse}         % For modern command definitions
+\RequirePackage{xstring}        % For \IfEqCase command
 \RequirePackage[tracking=true]{microtype}% Improves text spacing/appearance
 \microtypesetup{protrusion=true,expansion=true}% Character protrusion and font expansion
 
@@ -118,12 +129,109 @@
 }
 
 % --- 4. Colors ---
-\definecolor{bpDark}{HTML}{2E2E2E}       % Dark header/footer
-\definecolor{bpLightGrey}{HTML}{F3F3F3}  % Page background
-\definecolor{bpDarkerGrey}{HTML}{E6E7E8} % "Background" box color
-\definecolor{bpWhite}{HTML}{FFFFFF}      % Content box color
+% Define base color palette
+\definecolor{bpWhite}{HTML}{FFFFFF}      % White
 
-\pagecolor{bpLightGrey}
+% Grey scale (ETH grey)
+\definecolor{bpLightGrey}{HTML}{F1F1F1}   % ETH grey 10%
+\definecolor{bpMediumGrey}{HTML}{E2E2E2}  % ETH grey 20%
+\definecolor{bpDark}{HTML}{575757}        % ETH grey 120%
+
+% Green (ETH green)
+\definecolor{bpLightGreen}{HTML}{EEF1E7}   % ETH green 10%
+\definecolor{bpMediumGreen}{HTML}{E0E3D0}  % ETH green 20%
+\definecolor{bpDarkGreen}{HTML}{365213}    % ETH green 120%
+
+% Blue (ETH blue)
+\definecolor{bpLightBlue}{HTML}{E9EFF7}    % ETH blue 10%
+\definecolor{bpMediumBlue}{HTML}{D3DEEF}   % ETH blue 20%
+\definecolor{bpDarkBlue}{HTML}{08407E}     % ETH blue 120%
+
+% Red (ETH red)
+\definecolor{bpLightRed}{HTML}{F8EBEA}     % ETH red 10%
+\definecolor{bpMediumRed}{HTML}{F1D7D5}    % ETH red 20%
+\definecolor{bpDarkRed}{HTML}{96272D}      % ETH red 120%
+
+% Purple (ETH purple)
+\definecolor{bpLightPurple}{HTML}{F8E8F3}  % ETH purple 10%
+\definecolor{bpMediumPurple}{HTML}{EFD0E3} % ETH purple 20%
+\definecolor{bpDarkPurple}{HTML}{8C0A59}   % ETH purple 120%
+
+% Functional color assignments (these are what get used in the template)
+\colorlet{bpPageBackground}{bpLightGrey}
+\colorlet{bpHeaderBackground}{bpDark}
+\colorlet{bpFooterBackground}{bpDark}
+\colorlet{bpLightBoxBackground}{bpWhite}
+\colorlet{bpDarkBoxBackground}{bpMediumGrey}
+\colorlet{bpHeaderText}{white}
+\colorlet{bpFooterText}{white}
+
+% Apply page background color
+\pagecolor{bpPageBackground}
+
+% Color scheme presets
+\NewDocumentCommand{\SetColorScheme}{m}{%
+    \IfEqCase{#1}{%
+        {default}{%
+                \colorlet{bpPageBackground}{bpLightGrey}%
+                \colorlet{bpHeaderBackground}{bpDark}%
+                \colorlet{bpFooterBackground}{bpDark}%
+                \colorlet{bpLightBoxBackground}{bpWhite}%
+                \colorlet{bpDarkBoxBackground}{bpMediumGrey}%
+                \colorlet{bpHeaderText}{white}%
+                \colorlet{bpFooterText}{white}%
+            }%
+            {green}{%
+                \colorlet{bpPageBackground}{bpLightGreen}%
+                \colorlet{bpHeaderBackground}{bpDarkGreen}%
+                \colorlet{bpFooterBackground}{bpDarkGreen}%
+                \colorlet{bpLightBoxBackground}{bpWhite}%
+                \colorlet{bpDarkBoxBackground}{bpMediumGreen}%
+                \colorlet{bpHeaderText}{white}%
+                \colorlet{bpFooterText}{white}%
+            }%
+            {blue}{%
+                \colorlet{bpPageBackground}{bpLightBlue}%
+                \colorlet{bpHeaderBackground}{bpDarkBlue}%
+                \colorlet{bpFooterBackground}{bpDarkBlue}%
+                \colorlet{bpLightBoxBackground}{bpWhite}%
+                \colorlet{bpDarkBoxBackground}{bpMediumBlue}%
+                \colorlet{bpHeaderText}{white}%
+                \colorlet{bpFooterText}{white}%
+            }%
+            {red}{%
+                \colorlet{bpPageBackground}{bpLightRed}%
+                \colorlet{bpHeaderBackground}{bpDarkRed}%
+                \colorlet{bpFooterBackground}{bpDarkRed}%
+                \colorlet{bpLightBoxBackground}{bpWhite}%
+                \colorlet{bpDarkBoxBackground}{bpMediumRed}%
+                \colorlet{bpHeaderText}{white}%
+                \colorlet{bpFooterText}{white}%
+            }%
+            {purple}{%
+                \colorlet{bpPageBackground}{bpLightPurple}%
+                \colorlet{bpHeaderBackground}{bpDarkPurple}%
+                \colorlet{bpFooterBackground}{bpDarkPurple}%
+                \colorlet{bpLightBoxBackground}{bpWhite}%
+                \colorlet{bpDarkBoxBackground}{bpMediumPurple}%
+                \colorlet{bpHeaderText}{white}%
+                \colorlet{bpFooterText}{white}%
+            }%
+    }[\PackageWarning{betterposterv2}{Unknown color scheme '#1'. Available: default, green, blue, red, purple}]%
+    \pagecolor{bpPageBackground}%
+}
+
+% Individual color override commands
+\NewDocumentCommand{\SetPageColor}{m}{\colorlet{bpPageBackground}{#1}\pagecolor{bpPageBackground}}
+\NewDocumentCommand{\SetHeaderColor}{m}{\colorlet{bpHeaderBackground}{#1}}
+\NewDocumentCommand{\SetFooterColor}{m}{\colorlet{bpFooterBackground}{#1}}
+\NewDocumentCommand{\SetLightBoxColor}{m}{\colorlet{bpLightBoxBackground}{#1}}
+\NewDocumentCommand{\SetDarkBoxColor}{m}{\colorlet{bpDarkBoxBackground}{#1}}
+\NewDocumentCommand{\SetHeaderTextColor}{m}{\colorlet{bpHeaderText}{#1}}
+\NewDocumentCommand{\SetFooterTextColor}{m}{\colorlet{bpFooterText}{#1}}
+
+% Apply color scheme from class option
+\AtEndPreamble{\SetColorScheme{\bp@colorscheme}}
 
 % --- 5. Layout Lengths ---
 \newlength{\bpHeaderHeight}
@@ -174,12 +282,12 @@
         },
     bpcolor/.is choice,
     bpcolor/grey/.style={
-            colback=bpDarkerGrey,
-            colframe=bpDarkerGrey,
+            colback=bpDarkBoxBackground,
+            colframe=bpDarkBoxBackground,
         },
     bpcolor/white/.style={
-            colback=bpWhite,
-            colframe=bpWhite,
+            colback=bpLightBoxBackground,
+            colframe=bpLightBoxBackground,
         },
     bpcolor/.default=white,
     bpstyle/.is choice,
@@ -271,13 +379,13 @@
 \DeclareNewLayer[
     background,
     topmargin,
-    contents={\color{bpDark}\rule{\paperwidth}{\bpHeaderHeight}}
+    contents={\color{bpHeaderBackground}\rule{\paperwidth}{\bpHeaderHeight}}
 ]{bp.header.bg}
 
 \DeclareNewLayer[
     background,
     bottommargin,
-    contents={\color{bpDark}\rule{\paperwidth}{\bpFooterHeight}}
+    contents={\color{bpFooterBackground}\rule{\paperwidth}{\bpFooterHeight}}
 ]{bp.footer.bg}
 
 \DeclareNewLayer[
@@ -287,7 +395,7 @@
             \parbox[c][\bpHeaderHeight][c]{\paperwidth}{%
                 \hspace{\bpSideMargin}%
                 \parbox{\dimexpr\paperwidth-2\bpSideMargin\relax}{%
-                    \color{white}\bfseries\fontsize{80}{105}\selectfont
+                    \color{bpHeaderText}\bfseries\fontsize{80}{105}\selectfont
                     \raggedright
                     \bpMainFinding
                 }%
@@ -302,7 +410,7 @@
             \parbox[c][\bpFooterHeight][c]{\paperwidth}{%
                 \hspace{\bpSideMargin}%
                 \parbox{\dimexpr\paperwidth-2\bpSideMargin\relax}{%
-                    \color{white}%
+                    \color{bpFooterText}%
                     \bpFooterContent
                 }%
             }%
