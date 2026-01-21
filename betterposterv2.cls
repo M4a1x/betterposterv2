@@ -310,7 +310,8 @@
             toptitle=1cm, bottomtitle=0cm,
             coltitle=black,
             arc=4mm,
-            fonttitle=\bfseries\Large
+            fonttitle=\bfseries\large,
+            fontupper=\normalsize
         },
     bpcolor/.is choice,
     bpcolor/grey/.style={
@@ -360,7 +361,7 @@
 
 % --- 8. Section Header ---
 \NewDocumentCommand{\bpsection}{m}{%
-    \par\vspace{0.5cm}{\Huge\bfseries\color{black} #1}\par\vspace{0.8cm}%
+    {\Large\bfseries\color{black} #1}\par\vspace{0.5em}%
 }
 
 % --- 9. Header & Footer Content ---
@@ -504,7 +505,7 @@
 % --- 12. Title Block ---
 \RenewDocumentCommand{\maketitle}{}{%
     \thispagestyle{scrheadings}%
-    \Large%
+    \LARGE%
     \@title
 }
 
