@@ -55,10 +55,12 @@
 \fi
 
 % --- 2. Essential Layout Packages ---
+% \RequirePackage[export]{adjustbox}% Extends graphicx with alignment options
 \RequirePackage{geometry}         % For margins
 \RequirePackage{xcolor}           % For colors
 \RequirePackage{graphicx}         % For images
-\RequirePackage[export]{adjustbox}% Extends graphicx with alignment options
+\RequirePackage{graphbox}        % For \includegraphics[align=...]
+\RequirePackage{calc}             % For calculations with lengths
 \RequirePackage{scrlayer-scrpage} % KOMA-Script headers/footers
 \RequirePackage{caption}          % For \captionof command
 \RequirePackage{siunitx}          % For SI units
@@ -271,8 +273,6 @@
 \newlength{\bpHeaderGap}
 \newlength{\bpFooterGap}
 \newlength{\bpColumnGap}
-\newlength{\bpFooterTopMargin}
-\newlength{\bpFooterBottomMargin}
 
 \setlength{\bpHeaderHeight}{15cm}
 \setlength{\bpFooterHeight}{10cm}
@@ -280,8 +280,6 @@
 \setlength{\bpHeaderGap}{3cm}
 \setlength{\bpFooterGap}{3cm}
 \setlength{\bpColumnGap}{1cm}
-\setlength{\bpFooterTopMargin}{0.5cm}
-\setlength{\bpFooterBottomMargin}{0.5cm}
 
 \NewDocumentCommand{\ApplyPosterGeometry}{}{%
     \geometry{
@@ -291,7 +289,8 @@
         right=\bpSideMargin,
         headheight=\bpHeaderHeight,
         headsep=\bpHeaderGap,
-        footskip=\bpFooterGap
+        footskip=\bpFooterGap,
+        marginparwidth=0pt
     }%
 }
 \ApplyPosterGeometry
@@ -300,8 +299,6 @@
 \NewDocumentCommand{\SetFooterHeight}{m}{\setlength{\bpFooterHeight}{#1}\ApplyPosterGeometry}
 \NewDocumentCommand{\SetSideMargin}{m}{\setlength{\bpSideMargin}{#1}\ApplyPosterGeometry}
 \NewDocumentCommand{\SetColumnGap}{m}{\setlength{\bpColumnGap}{#1}}
-\NewDocumentCommand{\SetFooterTopMargin}{m}{\setlength{\bpFooterTopMargin}{#1}}
-\NewDocumentCommand{\SetFooterBottomMargin}{m}{\setlength{\bpFooterBottomMargin}{#1}}
 
 % --- 6. Content Boxes (tcolorbox) ---
 \RequirePackage{tcolorbox}
@@ -391,37 +388,71 @@
 \NewDocumentCommand{\logo}{m}{\gdef\bpLogo{#1}}
 \newcommand{\bpLogo}{}
 
-% Legacy command for custom footer (if user wants full control)
-\NewDocumentCommand{\footercontent}{m}{\gdef\bpFooterContent{#1}}
-\NewDocumentCommand{\bpFooterContent}{}{%
-    % \begin{minipage}[c]{0.2\textwidth}
-    % \includegraphics[height=\bpFooterHeight,width=\bpFooterHeight,keepaspectratio]{graphics/magnethical.pdf}
-    % \end{minipage}
-    % % Auto-generate footer from structured elements
-    \ifdefempty{\bpQRCode}{}{%
-        \begin{minipage}[c]{0.18\textwidth}
-            \centering
-            \includegraphics[width=\linewidth, height=\dimexpr\bpFooterHeight-0.5cm\relax, keepaspectratio]{\bpQRCode}%
+\NewDocumentCommand{\footer}{m}{\gdef\bpFooterContent{#1}}
+\newcommand{\bpFooterLayout}{%
+    \parbox[c][\bpFooterHeight][c]{\dimexpr\textwidth+\bpSideMargin\relax}{%  % Go up to the edge on the right
+        \color{bpFooterText}%
+        %
+        % --- FLEXIBLE CONTAINER ---
+        %
+        % 1. Left: QR Code (if exists)
+        \ifdefempty{\bpQRCode}{}{%
+            \begin{minipage}[c]{0.1\textwidth}
+                \centering
+                \includegraphics[height=0.8\bpFooterHeight, keepaspectratio, align=c]{\bpQRCode}
+                {\bfseries\tiny\href{https://magnethical.org/}{magnethical.org}}
+            \end{minipage}%
+        }%
+        %
+        \hfill%
+        %
+        % 2. Middle-Left: Authors & Affiliations
+        \begin{minipage}[c]{0.45\textwidth}
+            \ifdefempty{\bpAuthors}{}{%}
+                \raggedright
+                {\Large\bfseries \bpAuthors \par}
+            }%
+            \ifdefempty{\bpAffiliations}{}{%
+                \vspace{0.4em}
+                {\normalsize \bpAffiliations \par}
+            }%
+            \ifdefempty{\bpYear}{}{%
+                \vspace{0.4em}
+                {\normalsize \bpYear \par}
+            }%
         \end{minipage}%
-        \hfill
-    }%
-    \ifdefempty{\bpAuthors}{}{%
-        \begin{minipage}[c]{0.57\textwidth}
-            \Large
-            \ifdefempty{\bpAuthors}{}{\textbf{Authors:}\\\bpAuthors\\[0.5em]}%
-            \ifdefempty{\bpAffiliations}{}{\bpAffiliations}%
-        \end{minipage}%
-        \hfill
-    }%
-    \ifdefempty{\bpLogo}{}{%
-        \begin{minipage}[c]{0.2\textwidth}
-            \includegraphics[height=\dimexpr\bpFooterHeight-2cm\relax, keepaspectratio]{\bpLogo}%
+        %
+        \hfill%
+        %
+        % 3. Right: Logo & Portrait
+        \begin{minipage}[c]{0.45\textwidth}
+            \raggedleft
+            % Logo
+            \ifdefempty{\bpLogo}{}{%
+                \includegraphics[height=\bpFooterHeight, keepaspectratio, align=c]{\bpLogo}%
+            }%
+            % Portrait
+            \ifdefempty{\bpPortrait}{}{%
+                \includegraphics[height=\bpFooterHeight, keepaspectratio, align=c]{\bpPortrait}%
+            }%
         \end{minipage}%
     }%
 }
 
+% --- 10. Hyperlinks & PDF Metadata ---
+\RequirePackage[pdfusetitle]{hyperref}
+\hypersetup{%
+    hidelinks,
+    plainpages=false,
+    pdfsubject={\bpMainFinding},
+    pdfkeywords={poster, scientific, research},
+    pdfcreator={LuaLaTeX with betterposterv2 class},
+    pdfdisplaydoctitle=true,
+    pdfpagelayout=SinglePage,
+    bookmarksnumbered=false,
+}%
 
-% --- 10. Header & Footer Layers ---
+% --- 11. Header & Footer Layers ---
 \clearpairofpagestyles  % clear existing header/footer, e.g. page numbering
 
 % --- Backgrounds Layers ---
@@ -456,13 +487,12 @@
 
 \DeclareNewLayer[
     foreground,
-    foot,
-    contents={%
-            % \parbox[c][\bpFooterHeight][c]{\textwidth}{%
-            % \color{bpFooterText}%
-            \bpFooterContent%
-            % }%
-        }
+    page,
+    hoffset=\bpSideMargin,
+    voffset=\dimexpr\paperheight-\bpFooterHeight\relax,
+    width=\dimexpr\paperwidth-\bpSideMargin\relax,   % go up to the page edge on the right
+    height=\bpFooterHeight,
+    contents={\bpFooterLayout}
 ]{bp.footer.content}
 
 \AddLayersToPageStyle{scrheadings}{
@@ -473,7 +503,7 @@
 }
 \pagestyle{scrheadings}
 
-% --- 10. Title Block ---
+% --- 12. Title Block ---
 \RenewDocumentCommand{\maketitle}{}{%
     \thispagestyle{scrheadings}%
     \Large%
