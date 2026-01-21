@@ -37,6 +37,15 @@
 
 % Check for LuaLaTeX/XeLaTeX for modern font support
 \RequirePackage{iftex}
+\RequirePackage{etoolbox}  % Programming facilities
+
+\ifboolexpr{not bool{luatex} and not bool{xetex}}{
+    \ClassWarningNoLine{betterposterv2}{%
+        You are not using LuaLaTeX or XeLaTeX.\MessageBreak
+        Modern font features will be limited.\MessageBreak
+        Recommended: Compile with LuaLaTeX for best results%
+    }%
+}{}
 
 % --- Debug Mode ---
 \ifbp@debug
@@ -46,14 +55,15 @@
 \fi
 
 % --- 2. Essential Layout Packages ---
-\RequirePackage{geometry}       % For margins
-\RequirePackage{xcolor}         % For colors
-\RequirePackage{graphicx}       % For images
+\RequirePackage{geometry}         % For margins
+\RequirePackage{xcolor}           % For colors
+\RequirePackage{graphicx}         % For images
 \RequirePackage{scrlayer-scrpage} % KOMA-Script headers/footers
-\RequirePackage{caption}        % For \captionof command
-\RequirePackage{siunitx}        % For SI units
-\RequirePackage{xparse}         % For modern command definitions
-\RequirePackage{xstring}        % For \IfEqCase command
+\RequirePackage{caption}          % For \captionof command
+\RequirePackage{siunitx}          % For SI units
+\RequirePackage{import}		      % Relative path imports
+\RequirePackage{xparse}           % For modern command definitions
+\RequirePackage{xstring}          % For \IfEqCase command
 \RequirePackage[tracking=true]{microtype}% Improves text spacing/appearance
 \microtypesetup{protrusion=true,expansion=true}% Character protrusion and font expansion
 
