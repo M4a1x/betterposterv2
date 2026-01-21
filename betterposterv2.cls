@@ -23,32 +23,81 @@
 \RequirePackage{caption}        % For \captionof command
 \RequirePackage{siunitx}        % For SI units
 \RequirePackage{xparse}         % For modern command definitions
-\RequirePackage{microtype}      % Improves text spacing/appearance
+\RequirePackage[tracking=true]{microtype}% Improves text spacing/appearance
+\microtypesetup{protrusion=true,expansion=true}% Character protrusion and font expansion
 
 % --- 3. Typography & Fonts ---
-% Font Loading: Prefer Fira Sans (Modern, Open Source), fallback to Helvetica
+% Font Loading: Fira family (Sans, Math, Code) - Modern, Open Source
 \ifboolexpr{bool{luatex} or bool{xetex}}{
     \RequirePackage{fontspec}
+    \RequirePackage{unicode-math}% Load after fontspec, before font declarations
+
     % Try loading Fira Sans
     \IfFontExistsTF{Fira Sans}{
         \setsansfont{Fira Sans}[
             UprightFont=*-Regular,
-            BoldFont=*-SemiBold,
+            BoldFont=*-Bold,
             ItalicFont=*-Italic,
-            BoldItalicFont=*-SemiBoldItalic
+            BoldItalicFont=*-BoldItalic,
+            Scale=1.0
         ]
         % Use Fira Sans as the main font for the poster
         \setmainfont{Fira Sans}[
             UprightFont=*-Regular,
-            BoldFont=*-SemiBold,
+            BoldFont=*-Bold,
             ItalicFont=*-Italic,
-            BoldItalicFont=*-SemiBoldItalic
+            BoldItalicFont=*-BoldItalic,
+            Scale=1.0
+        ]
+        % Define additional font series for more weight options
+        \newfontfamily\firasansmedium{Fira Sans}[
+            UprightFont=*-Medium,
+            ItalicFont=*-MediumItalic,
+            Scale=1.0
+        ]
+        \newfontfamily\firasansextrabold{Fira Sans}[
+            UprightFont=*-ExtraBold,
+            ItalicFont=*-ExtraBoldItalic,
+            Scale=1.0
         ]
     }{
         % Fallback if Fira Sans is not installed
         \setsansfont{Arial}
         \setmainfont{Arial}
     }
+
+    % Monospace: Try Fira Code, then Fira Mono, then fallback
+    \IfFontExistsTF{Fira Code}{
+        \setmonofont{Fira Code}[
+            Scale=0.9,
+            Contextuals=Alternate
+        ]
+    }{
+        \IfFontExistsTF{Fira Mono}{
+            \setmonofont{Fira Mono}[Scale=0.9]
+        }{
+            \setmonofont{DejaVu Sans Mono}[Scale=0.9]
+        }
+    }
+
+    % Math font: Fira Math pairs perfectly with Fira Sans
+    \IfFontExistsTF{Fira Math}{
+        \setmathfont{Fira Math}[
+            Scale=1.0,
+            math-style=ISO,
+            bold-style=ISO
+        ]
+    }{
+        % Fallback to a sans-serif math font if Fira Math not available
+        \setmathfont{Latin Modern Math}
+    }
+
+    % Dedicated font family for siunitx numbers to ensure consistent appearance
+    \newfontfamily{\unitnumberfont}{Fira Sans}[
+        UprightFont=*-Regular,
+        Numbers=Lining,
+        Scale=1.0
+    ]
 }{
     % PDFLaTeX fallback
     \RequirePackage[T1]{fontenc}
@@ -56,7 +105,17 @@
     \renewcommand{\familydefault}{\sfdefault}
 }
 
-\sisetup{detect-all}
+% Configure siunitx for poster presentation
+\sisetup{
+    detect-all,                    % Detect font weight/shape
+    mode=text,                     % Use text fonts not math
+    text-family-to-math=true,      % Ensure consistency
+    text-series-to-math=true,
+    number-text-rm=\unitnumberfont,% Use dedicated font for numbers
+    per-mode=symbol,               % Use / for division
+    group-separator={,},           % Thousands separator
+    group-minimum-digits=4,        % Group numbers ≥ 10000
+}
 
 % --- 4. Colors ---
 \definecolor{bpDark}{HTML}{2E2E2E}       % Dark header/footer
@@ -192,7 +251,7 @@
             \parbox[c][\bpHeaderHeight][c]{\paperwidth}{%
                 \hspace{\bpSideMargin}%
                 \parbox{\dimexpr\paperwidth-2\bpSideMargin\relax}{%
-                    \color{white}\bfseries\fontsize{80}{95}\selectfont
+                    \color{white}\bfseries\fontsize{80}{105}\selectfont
                     \raggedright
                     \bpMainFinding
                 }%
