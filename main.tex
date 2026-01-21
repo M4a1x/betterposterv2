@@ -17,25 +17,25 @@
 
 % 3. The Footer
 % We use minipages to organize the footer: [ QR Code | Authors | Logo ]
-\footercontent{
+\footercontent{%
     \begin{minipage}{0.15\textwidth}
         % Replace with your QR code image
-        \includegraphics[height=8cm, keepaspectratio]{example-image-1x1}
+        \includegraphics[height=8cm, keepaspectratio]{example-image-1x1}%
     \end{minipage}%
     \hfill
     \begin{minipage}{0.6\textwidth}
         \Large
         \textbf{Authors:}\\
-        Your Name$^{1}$, Supervisor Name$^{2}$\\
-        $^{1}$Department of Electrical Engineering, University of Schifferstadt\\
-        $^{2}$Institute for Chemical Technology
+        Your Name\textsuperscript{1}, Supervisor Name\textsuperscript{2}\\
+        \textsuperscript{1}Department of Electrical Engineering, University of Schifferstadt\\
+        \textsuperscript{2}Institute for Chemical Technology
     \end{minipage}%
     \hfill
     \begin{minipage}{0.2\textwidth}
         \raggedleft
         % Replace with your logo
-        \includegraphics[height=6cm, keepaspectratio]{example-image-16x9}
-    \end{minipage}
+        \includegraphics[height=6cm, keepaspectratio]{example-image-16x9}%
+    \end{minipage}%
 }
 
 \begin{document}
@@ -45,7 +45,7 @@
 
 % --- BLOCK 1: BACKGROUND (Wide Grey) ---
 \begin{bpwidebox}{Background}
-    Current commercial NMR spectrometers cost upwards of \$50k, limiting access in education and developing regions. We propose a \textbf{25 MHz (0.58 T)} permanent magnet system using commercial-off-the-shelf (COTS) RF components and a custom open-source Python analysis stack to democratize magnetic resonance.
+    Current commercial NMR spectrometers cost upwards of \$50k, limiting access in education and developing regions. We propose a \textbf{25~MHz (0.58~T)} permanent magnet system using commercial-off-the-shelf (COTS) RF components and a custom open-source Python analysis stack to democratize magnetic resonance.
 \end{bpwidebox}
 
 % --- BLOCK 2: METHODS & SYSTEM (Two Columns) ---
@@ -67,7 +67,7 @@
 
         \begin{center}
             % Placeholder image
-            \includegraphics[width=\linewidth, height=8cm, keepaspectratio]{example-image-a}
+            \includegraphics[width=\linewidth, height=8cm, keepaspectratio]{example-image-a}%
             \captionof{figure}{RF Signal Chain Block Diagram}
         \end{center}
     \end{bpwhitebox}
@@ -81,7 +81,7 @@
 
         \textbf{Processing Pipeline:}
         \begin{enumerate}[leftmargin=*]
-            \item Digital Down Conversion (DDC) from 25 MHz to Baseband.
+            \item Digital Down Conversion (DDC) from 25~MHz to Baseband.
             \item CIC Decimation filters.
             \item Phase correction (0th and 1st order).
             \item FFT and Voigt Profile fitting.
@@ -107,14 +107,14 @@ def process_signal(raw_data):
         \textbf{Ethanol Spectrum Analysis:}\\
         The figure on the right demonstrates a single-shot acquisition of an Ethanol sample.
 
-        We observe clearly resolved J-coupling in the methyl triplet and methylene quartet. The linewidth (FWHM) is approximately \textbf{4.5 Hz} after shimming.
+        We observe clearly resolved J-coupling in the methyl triplet and methylene quartet. The linewidth (FWHM) is approximately \textbf{4.5~Hz} after shimming.
 
         \vspace{1em}
         \begin{tabular}{ll}
             \toprule
             \textbf{Parameter} & \textbf{Value} \\
             \midrule
-            Larmor Freq.       & 24.95 MHz      \\
+            Larmor Freq.       & 24.95~MHz      \\
             SNR (Single)       & $> 500$        \\
             \bottomrule
         \end{tabular}
@@ -122,14 +122,14 @@ def process_signal(raw_data):
     \hfill
     \begin{minipage}{0.5\textwidth}
         \centering
-        \includegraphics[width=\linewidth, height=12cm, keepaspectratio]{example-image-b}
-        \captionof{figure}{25 MHz 1H-NMR spectrum of Ethanol.}
+        \includegraphics[width=\linewidth, height=12cm, keepaspectratio]{example-image-b}%
+        \captionof{figure}{25~MHz \textsuperscript{1}H-NMR spectrum of Ethanol.}
     \end{minipage}
 \end{bpwhitebox}
 
 % --- BLOCK 4: LIMITATION (Wide Grey) ---
 \begin{bpwidebox}{Limitation}
-    Field homogeneity remains the primary challenge. Thermal drift of the permanent magnet shifts the Larmor frequency by approx $200$\,Hz/$^\circ$C, requiring an external $B_0$ lock loop or temperature stabilization chamber for long-term averaging.
+    Field homogeneity remains the primary challenge. Thermal drift of the permanent magnet shifts the Larmor frequency by approx $200$\,Hz/\textdegree C, requiring an external $B_0$ lock loop or temperature stabilization chamber for long-term averaging.
 \end{bpwidebox}
 
 \end{document}
