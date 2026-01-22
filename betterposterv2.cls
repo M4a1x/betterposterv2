@@ -323,7 +323,7 @@
             left=1cm, right=1cm, top=1cm, bottom=1cm,
             toptitle=1cm, bottomtitle=0cm,
             coltitle=black,
-            arc=4mm,
+            % arc=4mm,
             fonttitle=\bfseries\bpBoxTitleSize,
             fontupper=\normalsize,
             left skip=0pt,
@@ -341,6 +341,12 @@
             colframe=bpLightBoxBackground,
         },
     bpcolor/.default=white,
+    bptitlebg/.is choice,
+    bptitlebg/normal/.style={},
+    bptitlebg/transparent/.style={
+            colbacktitle=bpPageBackground,
+        },
+    bptitlebg/.default=normal,
     bpstyle/.is choice,
     bpstyle/normal/.style={},
     bpstyle/wide/.style={

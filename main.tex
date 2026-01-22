@@ -48,7 +48,7 @@
 \maketitle
 
 % --- BLOCK 1: BACKGROUND (Wide Grey) ---
-\begin{bpbox}[bpcolor=grey, bpstyle=wide, title={Background}]
+\begin{bpbox}[bpcolor=grey, bpstyle=wide, bptitlebg=transparent, title={Background}]
     Current commercial NMR spectrometers cost upwards of \$50k, limiting access in education and developing regions. We propose a \SI{25}{\mega\hertz} (\SI{0.58}{\tesla}) permanent magnet system using commercial-off-the-shelf (COTS) RF components and a custom open-source Python analysis stack to democratize magnetic resonance.
 \end{bpbox}
 
@@ -80,7 +80,7 @@ def process_signal(raw_data):
 \end{bpcolumns}
 
 % --- BLOCK 3: RESULTS ---
-% \bpsection{Results}
+\bpsection{Results}
 \begin{bpbox}[title={Results Overview}]
     \begin{minipage}{0.45\textwidth}
         \textbf{Ethanol Spectrum Analysis:}\\
