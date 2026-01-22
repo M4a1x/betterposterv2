@@ -301,7 +301,7 @@
     bpbase/.style={
             enhanced,
             boxrule=0pt,
-            left=1cm, right=1cm, top=0.5em, bottom=1cm,
+            left=1cm, right=1cm, top=1cm, bottom=1cm,
             toptitle=1cm, bottomtitle=0cm,
             coltitle=black,
             arc=4mm,
@@ -361,7 +361,7 @@
 
 % --- 8. Section Header ---
 \NewDocumentCommand{\bpsection}{m}{%
-    \par\vspace{0.5\baselineskip}{\Large\bfseries\color{black} #1}\par\vspace{0.5\baselineskip}%
+    \par\noindent\hspace{1cm}{\Large\bfseries\color{black} #1}\par%
 }
 
 % --- 9. Header & Footer Content ---
@@ -505,7 +505,7 @@
 % --- 12. Title Block ---
 \RenewDocumentCommand{\maketitle}{}{%
     \thispagestyle{scrheadings}%
-    \LARGE%
+    \Large%
     \@title
 }
 
