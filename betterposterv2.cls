@@ -450,7 +450,7 @@
         %
         % Authors & Affiliations - vertically centered, no fixed width
         {\begin{tabular}[c]{@{}l@{}}
-                \ifdefempty{\bpAuthors}{}{{\large\bpAuthors}}%
+                \ifdefempty{\bpAuthors}{}{\large\bpAuthors}%
                 \ifdefempty{\bpAffiliations}{}{\ifdefempty{\bpAuthors}{}{\\}{\normalsize\bpAffiliations}}%
                 \ifdefempty{\bpYear}{}{\ifdefempty{\bpAuthors}{\ifdefempty{\bpAffiliations}{}{\\}}{\\}{\normalsize\bpYear}}%
             \end{tabular}}%
