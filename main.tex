@@ -1,16 +1,35 @@
 % main.tex
 % Compile with LuaLaTeX (recommended) or XeLaTeX
-\documentclass[colorscheme=purple,debug=false]{betterposterv2} % Options: default, green, blue, red, purple
-
-% --- Packages ---
-\usepackage{booktabs}
-\usepackage{enumitem}
+\documentclass[%
+    colorscheme=purple,   % Options: default, green, blue, red, purple
+    fontsize=42pt,        % Options: 36pt, 42pt, 48pt, ...
+    papersize=a0paper,    % Options: a0paper, a1paper, a2paper, a3paper, a4paper, letterpaper, ...
+    orientation=portrait, % Options: portrait, landscape
+    debug=false           % Options: true, false
+]{betterposterv2}
 
 % --- Poster Layout (optional overrides) ---
-% \SetHeaderHeight{14cm}
-% \SetFooterHeight{12cm}
-% \SetSideMargin{4.5cm}
-% \SetColumnGap{1.2cm}
+% Customize poster geometry (defaults shown):
+% \SetHeaderHeight{20cm}
+% \SetFooterHeight{10cm}
+% \SetSideMargin{3cm}
+
+% --- Color Customization (optional) ---
+% Override individual colors (defaults use colorscheme option):
+% \SetPageColor{bpLightGrey}
+% \SetHeaderColor{bpDark}
+% \SetFooterColor{bpDark}
+% \SetLightBoxColor{bpWhite}
+% \SetDarkBoxColor{bpMediumGrey}
+% \SetHeaderTextColor{white}
+% \SetFooterTextColor{white}
+
+% --- Font Size Customization (optional) ---
+% Customize font sizes (defaults shown):
+% \SetMainFindingSize{\Huge}
+% \SetTitleSize{\Large}
+% \SetBoxTitleSize{\large}
+% \SetSectionSize{\Large}
 
 % --- Poster Content Configuration ---
 \mainfinding{A \$50 Open-Source NMR Spectrometer achieves \unit{\hertz}-level SDR and Python processing.}

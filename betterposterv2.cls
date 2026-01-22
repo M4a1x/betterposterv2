@@ -1,6 +1,6 @@
 %% betterposterv2.cls
-%% A Modern, Simplified LaTeX class for the "Better Poster v2" layout
-%% Author: Research Assistant
+%% A Modern LaTeX class for the "Better Poster v2" layout by Mike Morrison using ETH colorschemes.
+%% Author: Max Stabel
 %% Date: 2026-01-21
 
 \NeedsTeXFormat{LaTeX2e}
@@ -9,6 +9,8 @@
 % --- 1. Base Class & Engine ---
 % Define class options
 \RequirePackage{kvoptions}
+\RequirePackage{etoolbox}  % Programming facilities (needed for \ifdefempty)
+\RequirePackage{iftex}
 \SetupKeyvalOptions{
     family=bp,
     prefix=bp@
@@ -17,6 +19,12 @@
 \DeclareStringOption[default]{colorscheme}
 % Debug option (shows layout frames and enables draft mode)
 \DeclareBoolOption{debug}
+% Font size option (default 42pt for A0 poster)
+\DeclareStringOption[42pt]{fontsize}
+% Paper size option (default a0paper)
+\DeclareStringOption[a0paper]{papersize}
+% Orientation option (portrait or landscape)
+\DeclareStringOption[portrait]{orientation}
 % Pass unknown options to base class
 \DeclareDefaultOption{%
     \ifx\CurrentOptionValue\relax
@@ -30,15 +38,14 @@
 }
 \ProcessKeyvalOptions*
 
+% Pass papersize to base class
+\PassOptionsToClass{\bp@papersize}{scrartcl}
+% Pass orientation to base class if specified
+\PassOptionsToClass{\bp@orientation}{scrartcl}
 % We use scrartcl (KOMA-Script article) as the base.
-% - a0paper: Sets the size.
-% - fontsize=42pt: Sets the base font size large enough for A0. Taken from betterposter v2.
-\LoadClass[fontsize=42pt, parskip=half, a0paper]{scrartcl}
+\LoadClass[fontsize=\bp@fontsize, parskip=half]{scrartcl}
 
 % Check for LuaLaTeX/XeLaTeX for modern font support
-\RequirePackage{iftex}
-\RequirePackage{etoolbox}  % Programming facilities
-
 \ifboolexpr{not bool{luatex} and not bool{xetex}}{
     \ClassWarningNoLine{betterposterv2}{%
         You are not using LuaLaTeX or XeLaTeX.\MessageBreak
@@ -277,6 +284,7 @@
 
 \NewDocumentCommand{\ApplyPosterGeometry}{}{%
     \geometry{
+        \bp@orientation,
         top=\dimexpr\bpHeaderHeight+\baselineskip\relax,
         bottom=\dimexpr\bpFooterHeight+\baselineskip\relax,
         left=\bpSideMargin,
@@ -293,6 +301,17 @@
 \NewDocumentCommand{\SetFooterHeight}{m}{\setlength{\bpFooterHeight}{#1}\ApplyPosterGeometry}
 \NewDocumentCommand{\SetSideMargin}{m}{\setlength{\bpSideMargin}{#1}\ApplyPosterGeometry}
 
+% --- Font Size Variables ---
+\newcommand{\bpMainFindingSize}{\Huge}
+\newcommand{\bpTitleSize}{\Large}
+\newcommand{\bpBoxTitleSize}{\large}
+\newcommand{\bpSectionSize}{\Large}
+
+\NewDocumentCommand{\SetMainFindingSize}{m}{\renewcommand{\bpMainFindingSize}{#1}}
+\NewDocumentCommand{\SetTitleSize}{m}{\renewcommand{\bpTitleSize}{#1}}
+\NewDocumentCommand{\SetBoxTitleSize}{m}{\renewcommand{\bpBoxTitleSize}{#1}}
+\NewDocumentCommand{\SetSectionSize}{m}{\renewcommand{\bpSectionSize}{#1}}
+
 % --- 6. Content Boxes (tcolorbox) ---
 \RequirePackage{tcolorbox}
 \tcbuselibrary{skins, raster, breakable}
@@ -305,7 +324,7 @@
             toptitle=1cm, bottomtitle=0cm,
             coltitle=black,
             arc=4mm,
-            fonttitle=\bfseries\large,
+            fonttitle=\bfseries\bpBoxTitleSize,
             fontupper=\normalsize,
             left skip=0pt,
             right skip=0pt,
@@ -361,7 +380,7 @@
 
 % --- 8. Section Header ---
 \NewDocumentCommand{\bpsection}{m}{%
-    \par\noindent\hspace{1cm}{\Large\bfseries\color{black} #1}\par%
+    \par\noindent\hspace{1cm}{\bpSectionSize\bfseries\color{black} #1}\par%
 }
 
 % --- 9. Header & Footer Content ---
@@ -478,7 +497,7 @@
     contents={%
             \parbox[c][\bpHeaderHeight][c]{\textwidth}{%
                 \color{bpHeaderText}%
-                \Huge%
+                \bpMainFindingSize%
                 \bpMainFinding%
             }%
         }
@@ -505,7 +524,7 @@
 % --- 12. Title Block ---
 \RenewDocumentCommand{\maketitle}{}{%
     \thispagestyle{scrheadings}%
-    \Large%
+    \bpTitleSize%
     \@title
 }
 
