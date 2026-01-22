@@ -62,7 +62,7 @@
 \fi
 
 % --- 2. Essential Layout Packages ---
-% \RequirePackage[export]{adjustbox}% Extends graphicx with alignment options
+\RequirePackage[export]{adjustbox}% Extends graphicx with alignment options
 \RequirePackage{geometry}         % For margins
 \RequirePackage{xcolor}           % For colors
 \RequirePackage{graphicx}         % For images
@@ -73,6 +73,11 @@
 \RequirePackage{xparse}           % For modern command definitions
 \RequirePackage{xstring}          % For \IfEqCase command
 \RequirePackage{xifthen}          % For conditional commands
+\RequirePackage{booktabs}         % For better tables
+\RequirePackage{array}            % For better arrays/matrices
+\RequirePackage{multirow}         % For multirow table cells
+\RequirePackage{longtable}        % For multi-page tables
+\RequirePackage{csquotes}         % For proper quotation marks
 \RequirePackage[tracking=true]{microtype}% Improves text spacing/appearance
 \microtypesetup{protrusion=true,expansion=true}% Character protrusion and font expansion
 \captionsetup[figure]{hypcap=false}% Disable hyperref link to figure caption
@@ -345,6 +350,7 @@
     bptitlebg/normal/.style={},
     bptitlebg/transparent/.style={
             colbacktitle=bpPageBackground,
+            bottomtitle=0.5cm,
         },
     bptitlebg/.default=normal,
     bpstyle/.is choice,
@@ -416,50 +422,29 @@
 \newcommand{\bpFooterLayout}{%
     \parbox[c][\bpFooterHeight][c]{\dimexpr\textwidth+\bpSideMargin\relax}{%  % Go up to the edge on the right
         \color{bpFooterText}%
-        %
-        % --- FLEXIBLE CONTAINER ---
-        %
-        % 1. Left: QR Code (if exists)
+        \centering
+        % Left-aligned content: QR code + Authors/Affiliations (natural widths)
         \ifdefempty{\bpQRCode}{}{%
-            \begin{minipage}[c]{0.1\textwidth}
-                \centering
-                \includegraphics[height=0.8\bpFooterHeight, keepaspectratio]{\bpQRCode}\\[-0.7em]%
-                {\bfseries\tiny\href{https://magnethical.org/}{magnethical.org}}
-            \end{minipage}%
+            \includegraphics[height=0.8\bpFooterHeight, keepaspectratio, valign=c]{\bpQRCode}%
+            \hspace{1cm}%
         }%
         %
-        \hfill%
-        %
-        % 2. Middle-Left: Authors & Affiliations
-        \begin{minipage}[c]{0.45\textwidth}
-            \ifdefempty{\bpAuthors}{}{%}
-                \raggedright
-                {\large\bpAuthors\par}
-            }%
-            \ifdefempty{\bpAffiliations}{}{%
-                \vspace{0.4em}
-                {\normalsize \bpAffiliations \par}
-            }%
-            \ifdefempty{\bpYear}{}{%
-                \vspace{0.4em}
-                {\normalsize \bpYear \par}
-            }%
-        \end{minipage}%
+        % Authors & Affiliations - vertically centered, no fixed width
+        {\begin{tabular}[c]{@{}l@{}}
+                \ifdefempty{\bpAuthors}{}{{\large\bpAuthors}}%
+                \ifdefempty{\bpAffiliations}{}{\ifdefempty{\bpAuthors}{}{\\}{\normalsize\bpAffiliations}}%
+                \ifdefempty{\bpYear}{}{\ifdefempty{\bpAuthors}{\ifdefempty{\bpAffiliations}{}{\\}}{\\}{\normalsize\bpYear}}%
+            \end{tabular}}%
         %
         \hfill%
         %
-        % 3. Right: Logo & Portrait
-        \begin{minipage}[c]{0.45\textwidth}
-            \raggedleft
-            % Logo
-            \ifdefempty{\bpLogo}{}{%
-                \includegraphics[height=\bpFooterHeight, keepaspectratio]{\bpLogo}%
-            }%
-            % Portrait
-            \ifdefempty{\bpPortrait}{}{%
-                \includegraphics[height=\bpFooterHeight, keepaspectratio]{\bpPortrait}%
-            }%
-        \end{minipage}%
+        % Right-aligned: Logo & Portrait (natural widths)
+        \ifdefempty{\bpLogo}{}{%
+            \includegraphics[height=\bpFooterHeight, keepaspectratio, valign=c]{\bpLogo}%
+        }%
+        \ifdefempty{\bpPortrait}{}{%
+            \includegraphics[height=\bpFooterHeight, keepaspectratio, valign=c]{\bpPortrait}%
+        }%
     }%
 }
 

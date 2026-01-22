@@ -32,73 +32,90 @@
 % \SetSectionSize{\Large}
 
 % --- Poster Content Configuration ---
-\mainfinding{A \$50 Open-Source NMR Spectrometer achieves \unit{\hertz}-level SDR and Python processing.}
-\title{magnETHical: A Software-Defined Radio Approach to Low-Field NMR Spectroscopy}
+% Your main finding - This is the most important message of your poster
+\mainfinding{Teach people what you learned in 5 seconds (main takeaway/findings, not the title)}
+
+% Your poster title
+\title{Your Poster Title: Investigating the dynamics of X on Y}
 
 % --- Footer Configuration ---
-\qrcode{graphics/magnethical.eps}
-\authors{Max Stabel, Roland Riek}  % if multiple affiliations, use \textsuperscript{}
-\affiliations{D-CHAB, ETH Zürich, Switzerland}
-\logo{graphics/eth.eps}
+% QR code to your project/website (optional - comment out if not needed)
+\qrcode{example-image}
+% Authors - use \textsuperscript{} for affiliation markers if needed
+\authors{First Author, Second Author}
+% Affiliations - can use line breaks with \\
+\affiliations{Department of Example Studies, University of Example}
+% Institution logo (optional)
+\logo{example-image}
+% Publication year
 \publicationyear{2026}
-\portrait{graphics/portrait.jpg}
+% Author portrait/photo (optional - comment out if not needed)
+\portrait{example-image}
 
 \begin{document}
 
 \maketitle
 
-% --- BLOCK 1: BACKGROUND (Wide Grey) ---
-\begin{bpbox}[bpcolor=grey, bpstyle=wide, bptitlebg=transparent, title={Background}]
-    Current commercial NMR spectrometers cost upwards of \$50k, limiting access in education and developing regions. We propose a \SI{25}{\mega\hertz} (\SI{0.58}{\tesla}) permanent magnet system using commercial-off-the-shelf (COTS) RF components and a custom open-source Python analysis stack to democratize magnetic resonance.
+% --- BLOCK 1: BACKGROUND (Wide Grey Box) ---
+% Use bpcolor=grey for darker background, bpstyle=wide for full-width
+% Use bptitle=transparent to make title background blend with page
+\begin{bpbox}[bpcolor=grey, bpstyle=wide, title={Background}]
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
 \end{bpbox}
 
-% --- BLOCK 2: METHODS & SYSTEM (Two Columns) ---
-\bpsection{System Design}
+% --- BLOCK 2: TWO-COLUMN SECTION ---
+% Section headers align with box titles
+% \bpsection{Results}
+% Use bpcolumns[2] for 2 columns, bpcolumns[3] for 3 columns, etc.
 \begin{bpcolumns}[2]
-    \begin{bpbox}[title={Hardware Architecture}]
-        The system relies on a Red Pitaya FPGA board acting as a Software Defined Radio (SDR).
+    % Left column box
+    \begin{bpbox}[title={Result 1}, bptitlebg=transparent]  % Titlebg can be made transparent
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 
+        % Example of including a figure with caption
         \begin{center}
             \includegraphics[width=\linewidth, height=8cm, keepaspectratio]{example-image-a}%
-            \captionof{figure}{RF Signal Chain}
+            \captionof{figure}{Example figure caption describing the content}
         \end{center}
     \end{bpbox}
-    \begin{bpbox}[title={Python Processing Stack}]
-        Data acquisition and processing are handled purely in Python, utilizing \texttt{numpy} and \texttt{scipy}.
+    % Right column box, make sure theres no empty line between boxes! 
+    \begin{bpbox}[bptitlebg=transparent, title={Result 2}]  % Titlebg can be made transparent
+        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
 
-        \textbf{Pulse Sequence:}
-        A standard CPMG sequence is generated digitally.
-
+        % Example of code block
+        \textbf{Example Code:}
         \begin{verbatim}
-def process_signal(raw_data):
-    # Downconvert
-    iq = raw_data * np.exp(-1j * w_c * t)
-    # Decimate
-    return scipy.signal.decimate(iq, 10)
+def example_function(input_data):
+    # Process the data
+    result = input_data * 2
+    return result
         \end{verbatim}
     \end{bpbox}
 \end{bpcolumns}
 
-% --- BLOCK 3: RESULTS ---
-\bpsection{Results}
-\begin{bpbox}[title={Results Overview}]
+% --- BLOCK 3: Methods ---
+\bpsection{Methods}
+% Standard white box (default)
+\begin{bpbox}[title={}]  % Title can be omitted as well, which removes the title bar
+    % Example of side-by-side content using minipages
     \begin{minipage}{0.45\textwidth}
-        \textbf{Ethanol Spectrum Analysis:}\\
-        The figure on the right demonstrates a single-shot acquisition of an Ethanol sample.
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
 
-        We observe clearly resolved J-coupling in the methyl triplet and methylene quartet. The linewidth (FWHM) is approximately \textbf{\SI{4.5}{\hertz}} after shimming.
+        % Example of using siunitx for units
+        The measured value was \SI{42.5}{\milli\meter} with an uncertainty of \SI{0.5}{\milli\meter}.
     \end{minipage}%
     \hfill
     \begin{minipage}{0.5\textwidth}
         \centering
-        \includegraphics[width=\linewidth,height=12cm, keepaspectratio]{example-image-b}%
-        % \captionof{figure}{\SI{25}{\MHz} \textsuperscript{1}H-NMR spectrum of Ethanol.}
+        \includegraphics[width=\linewidth,height=6cm, keepaspectratio]{example-image-b}%
+        \captionof{figure}{Results visualization}
     \end{minipage}
 \end{bpbox}
 
-% --- BLOCK 4: LIMITATION (Wide Grey) ---
-\begin{bpbox}[bpcolor=grey, bpstyle=wide, title={Limitation}]
-    Field homogeneity remains the primary challenge. Thermal drift of the permanent magnet shifts the Larmor frequency by approx \SI{200}{\hertz\per\degreeCelsius}, requiring an external $B_0$ lock loop or temperature stabilization chamber for long-term averaging.
+% --- BLOCK 4: LIMITATIONS (Wide Grey Box) ---
+% The title can be put outside the box, by making the title background transparent
+\begin{bpbox}[bpcolor=grey, bpstyle=wide, title={Limitations}]
+    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 \end{bpbox}
 
 \end{document}
