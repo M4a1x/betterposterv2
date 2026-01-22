@@ -416,6 +416,9 @@
 \NewDocumentCommand{\qrcode}{m}{\gdef\bpQRCode{#1}}
 \newcommand{\bpQRCode}{}
 
+\NewDocumentCommand{\qrcodelabel}{m}{\gdef\bpQRCodeLabel{#1}}
+\newcommand{\bpQRCodeLabel}{}
+
 \NewDocumentCommand{\authors}{m}{\gdef\bpAuthors{#1}}
 \newcommand{\bpAuthors}{}
 
@@ -438,7 +441,10 @@
         \centering
         % Left-aligned content: QR code + Authors/Affiliations (natural widths)
         \ifdefempty{\bpQRCode}{}{%
-            \includegraphics[height=0.8\bpFooterHeight, keepaspectratio, valign=c]{\bpQRCode}%
+            \begin{tabular}[c]{@{}c@{}}
+                \includegraphics[height=0.8\bpFooterHeight, keepaspectratio]{\bpQRCode}%
+                \ifdefempty{\bpQRCodeLabel}{}{ \\[-0.7em]{\tiny\bpQRCodeLabel}}%
+            \end{tabular}%
             \hspace{1cm}%
         }%
         %
