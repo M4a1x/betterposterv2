@@ -68,6 +68,8 @@
 \RequirePackage{xifthen}          % For conditional commands
 \RequirePackage[tracking=true]{microtype}% Improves text spacing/appearance
 \microtypesetup{protrusion=true,expansion=true}% Character protrusion and font expansion
+\captionsetup[figure]{hypcap=false}% Disable hyperref link to figure caption
+\graphicspath{{./graphics}{./plots}{./images}{./img}{./schematics}{./pictures}{./imgs}{./figures}}
 
 % --- 3. Typography & Fonts ---
 % Font Loading: Fira family (Sans, Math, Code) - Modern, Open Source
@@ -268,26 +270,20 @@
 \newlength{\bpHeaderHeight}
 \newlength{\bpFooterHeight}
 \newlength{\bpSideMargin}
-\newlength{\bpHeaderGap}
-\newlength{\bpFooterGap}
-\newlength{\bpColumnGap}
 
-\setlength{\bpHeaderHeight}{15cm}
+\setlength{\bpHeaderHeight}{20cm}
 \setlength{\bpFooterHeight}{10cm}
 \setlength{\bpSideMargin}{3cm}
-\setlength{\bpHeaderGap}{3cm}
-\setlength{\bpFooterGap}{3cm}
-\setlength{\bpColumnGap}{1cm}
 
 \NewDocumentCommand{\ApplyPosterGeometry}{}{%
     \geometry{
-        top=\dimexpr\bpHeaderHeight+\bpHeaderGap\relax,
-        bottom=\dimexpr\bpFooterHeight+\bpFooterGap\relax,
+        top=\dimexpr\bpHeaderHeight+\baselineskip\relax,
+        bottom=\dimexpr\bpFooterHeight+\baselineskip\relax,
         left=\bpSideMargin,
         right=\bpSideMargin,
         headheight=\bpHeaderHeight,
-        headsep=\bpHeaderGap,
-        footskip=\bpFooterGap,
+        headsep=\baselineskip,
+        footskip=\baselineskip,
         marginparwidth=0pt
     }%
 }
@@ -296,7 +292,6 @@
 \NewDocumentCommand{\SetHeaderHeight}{m}{\setlength{\bpHeaderHeight}{#1}\ApplyPosterGeometry}
 \NewDocumentCommand{\SetFooterHeight}{m}{\setlength{\bpFooterHeight}{#1}\ApplyPosterGeometry}
 \NewDocumentCommand{\SetSideMargin}{m}{\setlength{\bpSideMargin}{#1}\ApplyPosterGeometry}
-\NewDocumentCommand{\SetColumnGap}{m}{\setlength{\bpColumnGap}{#1}}
 
 % --- 6. Content Boxes (tcolorbox) ---
 \RequirePackage{tcolorbox}
@@ -311,7 +306,11 @@
             coltitle=black,
             arc=4mm,
             fonttitle=\bfseries\large,
-            fontupper=\normalsize
+            fontupper=\normalsize,
+            left skip=0pt,
+            right skip=0pt,
+            before skip=0.5\baselineskip,
+            after skip=0.5\baselineskip
         },
     bpcolor/.is choice,
     bpcolor/grey/.style={
@@ -343,25 +342,26 @@
 
 % --- 7. Grid Layout ---
 \NewDocumentEnvironment{bpcolumns}{O{2}}{%
-    \begin{tcbraster}[
-            raster columns=#1,
-            raster equal height=rows,
-            raster column skip=\bpColumnGap,
-            raster row skip=\bpColumnGap,
-            raster left skip=0pt,
-            raster right skip=0pt,
-            raster width=\linewidth,
-            raster before skip=0pt,
-            raster after skip=0pt,
+    % \par\noindent%
+    \begin{tcbraster}[%
+            raster columns=#1,%
+            raster equal height=rows,%
+            raster column skip=0.5\baselineskip,%
+            raster row skip=0pt,%
+            raster left skip=0pt,%
+            raster right skip=0pt,%
+            raster width=\linewidth,%
+            raster before skip=0.5\baselineskip,%
+            raster after skip=0.5\baselineskip,%
             raster valign=top%
-        ]
+        ]%
         }{%
     \end{tcbraster}
 }
 
 % --- 8. Section Header ---
 \NewDocumentCommand{\bpsection}{m}{%
-    {\Large\bfseries\color{black} #1}\par\vspace{0.5em}%
+    \par\vspace{0.5\baselineskip}{\Large\bfseries\color{black} #1}\par\vspace{0.5\baselineskip}%
 }
 
 % --- 9. Header & Footer Content ---
