@@ -428,7 +428,7 @@
         \begin{minipage}[c]{0.45\textwidth}
             \ifdefempty{\bpAuthors}{}{%}
                 \raggedright
-                {\Large\bfseries \bpAuthors \par}
+                {\large\bpAuthors\par}
             }%
             \ifdefempty{\bpAffiliations}{}{%
                 \vspace{0.4em}
@@ -462,13 +462,20 @@
 \hypersetup{%
     hidelinks,
     plainpages=false,
-    pdfsubject={\bpMainFinding},
     pdfkeywords={poster, scientific, research},
     pdfcreator={LuaLaTeX with betterposterv2 class},
     pdfdisplaydoctitle=true,
     pdfpagelayout=SinglePage,
     bookmarksnumbered=false,
 }%
+
+% Set PDF author and subject at begin document when macros are defined
+\AtBeginDocument{%
+    \hypersetup{%
+        pdfauthor={\bpAuthors},
+        pdfsubject={\bpMainFinding}
+    }%
+}
 
 % --- 11. Header & Footer Layers ---
 \clearpairofpagestyles  % clear existing header/footer, e.g. page numbering
