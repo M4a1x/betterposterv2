@@ -89,11 +89,12 @@
 \RequirePackage{booktabs}         % For better tables
 \RequirePackage{array}            % For better arrays/matrices
 \RequirePackage{multirow}         % For multirow table cells
+\RequirePackage{multicol}          % For multi-column text
 \RequirePackage{longtable}        % For multi-page tables
 \RequirePackage{csquotes}         % For proper quotation marks
 \RequirePackage[tracking=true]{microtype}% Improves text spacing/appearance
 \microtypesetup{protrusion=true,expansion=true}% Character protrusion and font expansion
-\captionsetup[figure]{hypcap=false}% Disable hyperref link to figure caption
+\captionsetup[figure]{hypcap=false, labelformat=empty}% Disable hyperref link to figure caption and remove label
 \graphicspath{{./graphics}{./plots}{./images}{./img}{./schematics}{./pictures}{./imgs}{./figures}}
 
 % --- 3. Typography & Fonts ---
@@ -449,8 +450,8 @@
         }%
         %
         % Authors & Affiliations - vertically centered, no fixed width
-        {\begin{tabular}[c]{@{}l@{}}
-                \ifdefempty{\bpAuthors}{}{\large\bpAuthors}%
+        {\large\begin{tabular}[c]{@{}l@{}}
+                \ifdefempty{\bpAuthors}{}{\bpAuthors}%
                 \ifdefempty{\bpAffiliations}{}{\ifdefempty{\bpAuthors}{}{\\}{\normalsize\bpAffiliations}}%
                 \ifdefempty{\bpYear}{}{\ifdefempty{\bpAuthors}{\ifdefempty{\bpAffiliations}{}{\\}}{\\}{\normalsize\bpYear}}%
             \end{tabular}}%
